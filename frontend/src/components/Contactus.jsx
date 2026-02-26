@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, ClipboardList, User, AtSign } from 'lucide-react';
-
+const API = import.meta.env.VITE_API_URL;
 const Contactus = () => {
 
     const mapLocation = "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d6821.540730740125!2d75.69942184371165!3d31.254779697346418!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sLovely%20Professional%20University!5e0!3m2!1sen!2sin!4v1771615581195!5m2!1sen!2sin";
@@ -30,7 +30,7 @@ const Contactus = () => {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/contact", {
+            const res = await fetch(`${API}/api/contact`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
