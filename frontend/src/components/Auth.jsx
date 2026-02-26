@@ -55,8 +55,15 @@ const YogaAuth = () => {
                     email: formData.email,
                     password: formData.password
                 });
+                if (!response?.data?.user) {
+                    toast.error("Login failed: user data missing", {
+                        style: { background: "#333", color: "#fff" }
+                    });
+                    setLoading(false);
+                    return;
+                }
 
-                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("token", response.data.token || "");
 
                 localStorage.setItem(
                     "user",
