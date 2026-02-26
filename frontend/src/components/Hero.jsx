@@ -251,13 +251,22 @@ import { Mail, Instagram, Phone, Music, Zap, Anchor, Activity, Sparkles, Heart, 
 const LandingPage = () => {
     const navigate = useNavigate();
 
-    let storedUser = null;
-    try {
-        storedUser = JSON.parse(localStorage.getItem("user"));
-    } catch {
-        storedUser = null;
-    }
+    const loadUser = () => {
+        try {
+            const storedUser = localStorage.getItem("user");
 
+            if (!storedUser || storedUser === "undefined") {
+                setUser(null);
+                return;
+            }
+
+            setUser(JSON.parse(storedUser));
+        } catch (error) {
+            console.log("Invalid user in localStorage");
+            localStorage.removeItem("user");
+            setUser(null);
+        }
+    };
     const handleFreeTrialClick = () => {
         if (storedUser) {
             // User is logged in → go to courses

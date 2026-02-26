@@ -12,12 +12,21 @@ const Navbar = () => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
-
         const loadUser = () => {
-            const storedUser = localStorage.getItem("user");
-            if (storedUser) {
+            try {
+                const storedUser = localStorage.getItem("user");
+
+                // If nothing or invalid value
+                if (!storedUser || storedUser === "undefined" || storedUser === "null") {
+                    setUser(null);
+                    return;
+                }
+
                 setUser(JSON.parse(storedUser));
-            } else {
+
+            } catch (error) {
+                console.log("Invalid JSON in localStorage:", error);
+                localStorage.removeItem("user");
                 setUser(null);
             }
         };
