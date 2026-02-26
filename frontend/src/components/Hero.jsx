@@ -251,7 +251,12 @@ import { Mail, Instagram, Phone, Music, Zap, Anchor, Activity, Sparkles, Heart, 
 const LandingPage = () => {
     const navigate = useNavigate();
 
-    const storedUser = JSON.parse(localStorage.getItem("user")); // will be null if not logged in
+    let storedUser = null;
+    try {
+        storedUser = JSON.parse(localStorage.getItem("user"));
+    } catch {
+        storedUser = null;
+    }
 
     const handleFreeTrialClick = () => {
         if (storedUser) {
