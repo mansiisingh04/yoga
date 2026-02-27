@@ -37,16 +37,37 @@ const YogaAuth = () => {
 
         try {
             if (mode === "signup") {
-                // 🔹 SIGNUP
+
+                // 1️⃣ Create account
                 await signupUser(formData);
 
-                toast.success("Account created successfully", {
+                // 2️⃣ Immediately login after signup
+                const loginResponse = await loginUser({
+                    email: formData.email,
+                    password: formData.password
+                });
+
+                if (!loginResponse?.data?.user || !loginResponse?.data?.token) {
+                    throw new Error("Auto login failed after signup");
+                }
+
+                // 3️⃣ Store token & user
+                localStorage.setItem("token", loginResponse.data.token);
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(loginResponse.data.user)
+                );
+
+                window.dispatchEvent(new Event("authChange"));
+
+                // 4️⃣ Show success
+                toast.success("Account created successfully!", {
                     style: { background: "#1A1C19", color: "#fff" }
                 });
 
-                setTimeout(() => {
-                    setMode("login");
-                }, 1500);
+                // 5️⃣ Navigate to landing page
+                navigate("/");
+
 
             } else {
                 // 🔹 LOGIN
@@ -56,9 +77,9 @@ const YogaAuth = () => {
                 });
 
                 if (!response?.data?.user || !response?.data?.token) {
+                    console.log("LOGIN RESPONSE:", response);
                     throw new Error("Login failed: user data missing");
                 }
-
                 // Store token & user
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem(

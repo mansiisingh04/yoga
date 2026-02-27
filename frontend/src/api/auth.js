@@ -1,11 +1,15 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const API = axios.create({
-    baseURL: `${API_URL}/api/auth`,
-    withCredentials: true,
+    baseURL: "http://localhost:5000/api", // change if deployed
 });
 
-export const signupUser = (data) => API.post("/signup", data);
-export const loginUser = (data) => API.post("/login", data); 
+// Signup
+export const signupUser = async (data) => {
+    return await API.post("/auth/signup", data);
+};
+
+// Login
+export const loginUser = async (data) => {
+    return await API.post("/auth/login", data);
+};

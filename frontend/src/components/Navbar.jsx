@@ -11,6 +11,12 @@ const Navbar = () => {
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
+            const handleClickOutside = (event) => {
+                if (!event.target.closest(".profile-dropdown")) {
+                    setOpen(false);
+                }
+            };
+            window.addEventListener("click", handleClickOutside);
         };
         const loadUser = () => {
             try {
@@ -22,7 +28,9 @@ const Navbar = () => {
                     return;
                 }
 
-                setUser(JSON.parse(storedUser));
+
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
 
             } catch (error) {
                 console.log("Invalid JSON in localStorage:", error);
@@ -43,18 +51,18 @@ const Navbar = () => {
             window.removeEventListener("authChange", loadUser);
         };
     }, []);
-
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
 
+        setOpen(false); // 👈 close dropdown
+
         window.dispatchEvent(new Event("authChange"));
 
-        alert("Logged out successfully ✅");
+        toast.success("Logged out successfully ✅");
 
         navigate("/");
     };
-
     return (
         <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 px-8 py-6 flex justify-between items-center ${isScrolled ? 'bg-white/80 backdrop-blur-md shadow-sm' : 'bg-transparent'
             }`}>
@@ -83,7 +91,7 @@ const Navbar = () => {
                         Login / Sign Up
                     </Link>
                 ) : (
-                    <div className="relative">
+                    <div className="relative profile-dropdown">
                         <div
                             onClick={() => setOpen(!open)}
                             className="flex items-center gap-2 cursor-pointer"
