@@ -4,51 +4,43 @@ export const contactUs = async (req, res) => {
     try {
         const { name, email, message } = req.body;
 
-        // ✅ RESPOND IMMEDIATELY (no waiting for email)
+        // 1. RESPOND IMMEDIATELY 
+        // This ensures the user sees a success message in <1 second.
         res.status(200).json({
             success: true,
-            message:
-                "Thank you for reaching out. Our team will contact you shortly.",
+            message: "Thank you! Your message has been received.",
         });
 
-        // ✅ SEND EMAILS IN BACKGROUND (parallel sending)
-        Promise.all([
+        // 2. RUN EMAILS IN BACKGROUND
+        // Wrapped in an async function that we do NOT 'await'
+        const handleEmails = async () => {
+            try {
+                await Promise.all([
+                    // Notify Admin
+                    sendEmail(
+                        process.env.ADMIN_EMAIL,
+                        "New Yoga Bliss Inquiry",
+                        `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+                    ),
+                    // Auto-reply to User
+                    sendEmail(
+                        email,
+                        "We received your message",
+                        `Hi ${name}, thank you for reaching out to Yoga Bliss! 🧘‍♀️
+                        `
+                    )
+                ]);
+            } catch (err) {
+                console.error("Background email process failed:", err.message);
+            }
+        };
 
-            // email to admin
-            sendEmail(
-                process.env.ADMIN_EMAIL,
-                "New Contact Message - Yoga Bliss",
-                `New contact form submission
-
-Name: ${name}
-Email: ${email}
-Message: ${message}`
-            ),
-
-            // auto reply to user
-            sendEmail(
-                email,
-                "We received your message",
-                `Hi ${name},
-
-Thank you for reaching out to Yoga Bliss 🧘‍♀️
-
-Our team has received your message and will contact you shortly.
-
-Warm regards,
-Yoga Bliss Team`
-            )
-
-        ]).catch((error) => {
-            // background email errors logged here
-            console.error("EMAIL BACKGROUND ERROR:", error);
-        });
+        handleEmails();
 
     } catch (error) {
-        console.error("CONTACT ERROR:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to send message",
-        });
+        console.error("CONTACT CONTROLLER ERROR:", error);
+        if (!res.headersSent) {
+            res.status(500).json({ success: false, message: "Server error" });
+        }
     }
 };
