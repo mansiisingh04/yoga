@@ -47,18 +47,19 @@ const YogaAuth = () => {
                     password: formData.password
                 });
 
-                console.log("AUTO LOGIN RESPONSE:", loginResponse);
-                console.log("AUTO LOGIN DATA:", loginResponse?.data);
-
-                if (!loginResponse?.data?.user || !loginResponse?.data?.token) {
+                if (!loginResponse?.data?.token) {
                     throw new Error("Auto login failed after signup");
                 }
 
-                // 3️⃣ Store token & user
                 localStorage.setItem("token", loginResponse.data.token);
+
                 localStorage.setItem(
                     "user",
-                    JSON.stringify(loginResponse.data.user)
+                    JSON.stringify({
+                        _id: loginResponse.data._id,
+                        name: loginResponse.data.name,
+                        email: loginResponse.data.email
+                    })
                 );
 
                 window.dispatchEvent(new Event("authChange"));
@@ -79,25 +80,26 @@ const YogaAuth = () => {
                     password: formData.password
                 });
 
-                console.log("FULL LOGIN RESPONSE:", response);
-                console.log("RESPONSE.DATA:", response?.data);
-                console.log("USER:", response?.data?.user);
-                console.log("TOKEN:", response?.data?.token);
 
-                if (!response?.data?.user || !response?.data?.token) {
-                    throw new Error("Login failed: user data missing");
+                if (!response?.data?.token) {
+                    throw new Error("Login failed: token missing");
                 }
-                // Store token & user
+
                 localStorage.setItem("token", response.data.token);
+
                 localStorage.setItem(
                     "user",
-                    JSON.stringify(response.data.user)
+                    JSON.stringify({
+                        _id: response.data._id,
+                        name: response.data.name,
+                        email: response.data.email
+                    })
                 );
 
                 window.dispatchEvent(new Event("authChange"));
 
                 toast.success(
-                    `Welcome back, ${response.data.user.name}!`,
+                    `Welcome back, ${response.data.name}!`,
                     {
                         style: { background: "#1A1C19", color: "#fff" }
                     }
