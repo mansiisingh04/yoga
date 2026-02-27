@@ -35,6 +35,11 @@ export const signup = async (req, res) => {
             phone,
             password: hashedPassword,
         });
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
         // 5️⃣ Send welcome email using SAME email function
         await sendEmail(
@@ -51,11 +56,12 @@ Team Yoga Bliss`
         // 6️⃣ Success response
         res.status(201).json({
             message: "Signup successful. Welcome email sent.",
+            token,
             user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                phone: user.phone,
+
             },
         });
 
