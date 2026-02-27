@@ -59,7 +59,7 @@ const Navbar = () => {
 
         window.dispatchEvent(new Event("authChange"));
 
-        toast.success("Logged out successfully ✅");
+        alert("You successfully logged out");
 
         navigate("/");
     };
@@ -103,7 +103,9 @@ const Navbar = () => {
                         {open && (
                             <div className="absolute right-0 mt-4 w-56 bg-white text-black rounded-2xl shadow-xl p-4 space-y-3">
                                 <div className="text-sm">
-                                    <p className="font-semibold">{user.email}</p>
+                                    <p className="text-sm text-gray-600 break-all">
+                                        {user.email}
+                                    </p>
                                     <p className="text-gray-500">{user.phone || "No phone added"}</p>
                                 </div>
 
