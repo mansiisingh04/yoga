@@ -120,7 +120,9 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "All fields are required." });
         }
 
-        const user = await User.findOne({ email });
+        // 🔥 Use lean() to avoid mongoose document issues
+        const user = await User.findOne({ email }).lean();
+
         if (!user) {
             return res.status(400).json({ message: "User not found. Please signup first." });
         }
@@ -130,25 +132,29 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials." });
         }
 
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ message: "JWT secret not configured." });
+        }
+
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        // Remove password before sending response
-        const userData = user.toObject();
-        delete userData.password;
+        // 🔥 Safely remove password
+        delete user.password;
 
-        res.status(200).json({
+        return res.status(200).json({
+            success: true,
             message: "Login successful",
             token,
-            user: userData,
+            user,
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+        console.error("LOGIN ERROR:", error);
+        return res.status(500).json({ message: "Server error" });
     }
 });
 
