@@ -73,7 +73,8 @@ const YogaAuth = () => {
                 JSON.stringify({
                     _id: userData._id || userData.id,
                     name: userData.name || formData.name,
-                    email: userData.email || formData.email
+                    email: userData.email || formData.email,
+                    phone: userData.phone || formData.phone
                 })
             );
 

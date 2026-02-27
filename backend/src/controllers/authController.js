@@ -61,7 +61,7 @@ Team Yoga Bliss`
                 id: user._id,
                 name: user.name,
                 email: user.email,
-
+                phone: user.phone,
             },
         });
 
