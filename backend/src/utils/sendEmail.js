@@ -5,16 +5,20 @@ const sendEmail = async (to, subject, text) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 465, // Use 465 for secure SSL
-            secure: true,
+            port: 587, // Use 465 for secure SSL
+            secure: false,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS, // Now without spaces!
             },
-            // These two lines will show you EXACTLY why it fails in your VS Code terminal
+
+            tls: {
+                // This helps bypass connection blocks on some servers
+                rejectUnauthorized: false
+            },
+            connectionTimeout: 10000,// These two lines will show you EXACTLY why it fails in your VS Code terminal
             logger: true,
             debug: true,
-            connectionTimeout: 10000,
             greetingTimeout: 10000,
             socketTimeout: 10000,
         });
