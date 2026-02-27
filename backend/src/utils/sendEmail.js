@@ -1,23 +1,21 @@
-// backend/src/utils/sendEmail.js
 import nodemailer from "nodemailer";
 
 const sendEmail = async (to, subject, text) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 587, // Use 465 for secure SSL
-            secure: false,
+            port: 587,
+            secure: false, // Must be false for port 587
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS, // Now without spaces!
+                pass: process.env.EMAIL_PASS, // 16-character App Password (no spaces)
             },
-
             tls: {
-                // This helps bypass connection blocks on some servers
-                rejectUnauthorized: false
+                // Critical for cloud hosting like Render to bypass handshake blocks
+                rejectUnauthorized: false,
+                minVersion: "TLSv1.2"
             },
-            connectionTimeout: 10000,// These two lines will show you EXACTLY why it fails in your VS Code terminal
-
+            connectionTimeout: 10000,
             greetingTimeout: 10000,
             socketTimeout: 10000,
         });
@@ -29,13 +27,14 @@ const sendEmail = async (to, subject, text) => {
             text,
         };
 
+        // We return the promise so the controller can choose to 'await' it or not
         const info = await transporter.sendMail(mailOptions);
         console.log(`✅ Email sent successfully to ${to}`);
         return info;
     } catch (err) {
-        // If this runs, you will see a specific error code (like 535) in your terminal
+        // We log the error but don't let it crash the main process
         console.error(`❌ NODEMAILER ERROR: ${err.message}`);
-        throw err;
+        return null;
     }
 };
 
