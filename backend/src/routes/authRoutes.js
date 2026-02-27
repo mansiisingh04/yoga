@@ -137,7 +137,8 @@ router.post("/login", async (req, res) => {
         );
 
         // Remove password before sending response
-        const { password: _, ...userData } = user._doc;
+        const userData = user.toObject();
+        delete userData.password;
 
         res.status(200).json({
             message: "Login successful",
