@@ -1,4 +1,4 @@
-import Brevo from "@getbrevo/brevo";
+import * as Brevo from "@getbrevo/brevo";
 
 const sendEmail = async (to, subject, text) => {
     try {
@@ -9,15 +9,16 @@ const sendEmail = async (to, subject, text) => {
             process.env.BREVO_API_KEY
         );
 
-        const sendSmtpEmail = {
-            sender: {
-                email: process.env.ADMIN_EMAIL,
-                name: "Yoga Bliss",
-            },
-            to: [{ email: to }],
-            subject: subject,
-            textContent: text,
+        const sendSmtpEmail = new Brevo.SendSmtpEmail();
+
+        sendSmtpEmail.sender = {
+            email: process.env.ADMIN_EMAIL,
+            name: "Yoga Bliss",
         };
+
+        sendSmtpEmail.to = [{ email: to }];
+        sendSmtpEmail.subject = subject;
+        sendSmtpEmail.textContent = text;
 
         const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
 
