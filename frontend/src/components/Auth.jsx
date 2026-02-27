@@ -37,13 +37,11 @@ const YogaAuth = () => {
 
         try {
             if (mode === "signup") {
+                // 🔹 SIGNUP
                 await signupUser(formData);
 
                 toast.success("Account created successfully", {
-                    style: {
-                        background: "#1A1C19",
-                        color: "#fff"
-                    }
+                    style: { background: "#1A1C19", color: "#fff" }
                 });
 
                 setTimeout(() => {
@@ -51,43 +49,46 @@ const YogaAuth = () => {
                 }, 1500);
 
             } else {
+                // 🔹 LOGIN
                 const response = await loginUser({
                     email: formData.email,
                     password: formData.password
                 });
-                if (!response?.data?.user) {
-                    toast.error("Login failed: user data missing", {
-                        style: { background: "#333", color: "#fff" }
-                    });
-                    setLoading(false);
-                    return;
+
+                if (!response?.data?.user || !response?.data?.token) {
+                    throw new Error("Login failed: user data missing");
                 }
 
-                localStorage.setItem("token", response.data.token || "");
-
+                // Store token & user
+                localStorage.setItem("token", response.data.token);
                 localStorage.setItem(
                     "user",
                     JSON.stringify(response.data.user)
                 );
+
                 window.dispatchEvent(new Event("authChange"));
-                toast.success("Welcome back 👋", {
-                    style: {
-                        background: "#1A1C19",
-                        color: "#fff"
+
+                toast.success(
+                    `Welcome back, ${response.data.user.name}!`,
+                    {
+                        style: { background: "#1A1C19", color: "#fff" }
                     }
-                });
+                );
+
                 setTimeout(() => {
                     navigate(location.state?.redirectTo || "/");
-                }, 1500);
+                }, 1000);
             }
 
         } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong", {
-                style: {
-                    background: "#333",
-                    color: "#fff"
+            toast.error(
+                error.response?.data?.message ||
+                error.message ||
+                "Something went wrong",
+                {
+                    style: { background: "#333", color: "#fff" }
                 }
-            });
+            );
         } finally {
             setLoading(false);
         }
@@ -190,6 +191,7 @@ const YogaAuth = () => {
                         {mode === "login" ? "Sign up here" : "Login here"}
                     </span>
                 </p>
+
             </div>
         </div>
     );
