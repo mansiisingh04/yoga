@@ -42,7 +42,7 @@ export const signup = async (req, res) => {
         );
 
         // 5️⃣ Send welcome email using SAME email function
-        await sendEmail(
+        sendEmail(
             email,
             "Welcome to Yoga Bliss!",
             `Hi ${name},
