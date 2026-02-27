@@ -2,18 +2,14 @@ import nodemailer from "nodemailer";
 
 const sendEmail = async (to, subject, text) => {
     try {
+        console.log("EMAIL_USER:", process.env.EMAIL_USER);
+
         const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 587,
-            secure: false, // Must be false for 587
+            service: "gmail",   // ✅ Use service instead of host/port
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS, // juqliicphifjkkte (Verified from your screenshot!)
+                pass: process.env.EMAIL_PASS,
             },
-            tls: {
-                rejectUnauthorized: false,
-                minVersion: "TLSv1.2"
-            }
         });
 
         const mailOptions = {
@@ -23,10 +19,13 @@ const sendEmail = async (to, subject, text) => {
             text,
         };
 
-        // We use await here so the background process knows when it's done
-        return await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
+        console.log("✅ Email sent:", info.response);
+
+        return info;
+
     } catch (err) {
-        console.error(`❌ NODEMAILER ERROR: ${err.message}`);
+        console.error("❌ NODEMAILER FULL ERROR:", err);
         return null;
     }
 };
