@@ -17,8 +17,7 @@ const sendEmail = async (to, subject, text) => {
                 rejectUnauthorized: false
             },
             connectionTimeout: 10000,// These two lines will show you EXACTLY why it fails in your VS Code terminal
-            logger: true,
-            debug: true,
+
             greetingTimeout: 10000,
             socketTimeout: 10000,
         });
