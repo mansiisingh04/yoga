@@ -47,6 +47,9 @@ const YogaAuth = () => {
                     password: formData.password
                 });
 
+                console.log("AUTO LOGIN RESPONSE:", loginResponse);
+                console.log("AUTO LOGIN DATA:", loginResponse?.data);
+
                 if (!loginResponse?.data?.user || !loginResponse?.data?.token) {
                     throw new Error("Auto login failed after signup");
                 }
@@ -76,8 +79,12 @@ const YogaAuth = () => {
                     password: formData.password
                 });
 
+                console.log("FULL LOGIN RESPONSE:", response);
+                console.log("RESPONSE.DATA:", response?.data);
+                console.log("USER:", response?.data?.user);
+                console.log("TOKEN:", response?.data?.token);
+
                 if (!response?.data?.user || !response?.data?.token) {
-                    console.log("LOGIN RESPONSE:", response);
                     throw new Error("Login failed: user data missing");
                 }
                 // Store token & user
