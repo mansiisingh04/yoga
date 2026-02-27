@@ -14,7 +14,9 @@ const app = express();
 // ================= MIDDLEWARE =================
 app.use(
     cors({
-        origin: "http://localhost:5173", // frontend URL (Vite default)
+        origin: ["http://localhost:5173",
+            "https://yoga-frontend-ea58.onrender.com"
+        ], // frontend URL (Vite default)
         credentials: true,
     })
 );

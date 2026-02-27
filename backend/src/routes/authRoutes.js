@@ -116,48 +116,37 @@ router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ message: "All fields are required." });
-        }
-
-        // 🔥 Use lean() to avoid mongoose document issues
-        const user = await User.findOne({ email }).lean();
-
+        // Check user exists
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "User not found. Please signup first." });
+            return res.status(400).json({ message: "User not found" });
         }
 
+        // Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials." });
+            return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        if (!process.env.JWT_SECRET) {
-            return res.status(500).json({ message: "JWT secret not configured." });
-        }
-
+        // Generate token
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
 
-        // 🔥 Safely remove password
-        delete user.password;
-
-        return res.status(200).json({
-            success: true,
-            message: "Login successful",
-            token,
-            user,
+        // IMPORTANT: Send user data + token
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: token
         });
 
     } catch (error) {
-        console.error("LOGIN ERROR:", error);
-        return res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error" });
     }
 });
-
 
 // ==========================
 // ✅ GET CURRENT USER (Protected)
