@@ -36,88 +36,66 @@ const YogaAuth = () => {
         setLoading(true);
 
         try {
-            if (mode === "signup") {
+            let authResponse;
 
+            if (mode === "signup") {
                 // 1️⃣ Create account
                 await signupUser(formData);
-
-                // 2️⃣ Immediately login after signup
-                const loginResponse = await loginUser({
+                // 2️⃣ Immediately login after signup to get the token
+                authResponse = await loginUser({
                     email: formData.email,
                     password: formData.password
                 });
-
-                if (!loginResponse?.data?.token) {
-                    throw new Error("Auto login failed after signup");
-                }
-
-                localStorage.setItem("token", loginResponse.data.token);
-
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify({
-                        _id: loginResponse.data._id,
-                        name: loginResponse.data.name,
-                        email: loginResponse.data.email
-                    })
-                );
-
-                window.dispatchEvent(new Event("authChange"));
-
-                // 4️⃣ Show success
-                toast.success("Account created successfully!", {
-                    style: { background: "#1A1C19", color: "#fff" }
-                });
-
-                // 5️⃣ Navigate to landing page
-                navigate("/");
-
-
             } else {
-                // 🔹 LOGIN
-                const response = await loginUser({
+                // 🔹 Standard LOGIN
+                authResponse = await loginUser({
                     email: formData.email,
                     password: formData.password
                 });
-
-
-                if (!response?.data?.token) {
-                    throw new Error("Login failed: token missing");
-                }
-
-                localStorage.setItem("token", response.data.token);
-
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify({
-                        _id: response.data._id,
-                        name: response.data.name,
-                        email: response.data.email
-                    })
-                );
-
-                window.dispatchEvent(new Event("authChange"));
-
-                toast.success(
-                    `Welcome back, ${response.data.name}!`,
-                    {
-                        style: { background: "#1A1C19", color: "#fff" }
-                    }
-                );
-
-                setTimeout(() => {
-                    navigate(location.state?.redirectTo || "/");
-                }, 1000);
             }
 
+            // 3️⃣ DEBUG: Check what the backend is actually sending
+            console.log("Backend Response:", authResponse.data);
+
+            // 4️⃣ Extract Token and User Data
+            // We check authResponse.data.token AND authResponse.data (if the token is the root)
+            const token = authResponse.data?.token || (typeof authResponse.data === 'string' ? authResponse.data : null);
+            const userData = authResponse.data?.user || authResponse.data;
+
+            if (!token) {
+                throw new Error("Login success, but no token received from server.");
+            }
+
+            // 5️⃣ Save to LocalStorage
+            localStorage.setItem("token", token);
+            localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    _id: userData._id || userData.id,
+                    name: userData.name || formData.name,
+                    email: userData.email || formData.email
+                })
+            );
+
+            // 6️⃣ Alert the rest of the app (Navbar) that user is logged in
+            window.dispatchEvent(new Event("authChange"));
+
+            toast.success(mode === "signup" ? "Account created!" : `Welcome back, ${userData.name || 'Yogi'}!`, {
+                style: { background: "#1A1C19", color: "#fff" }
+            });
+
+            // 7️⃣ Redirect to Home
+            setTimeout(() => {
+                navigate("/");
+            }, 1000);
+
         } catch (error) {
+            console.error("Auth Error:", error);
             toast.error(
                 error.response?.data?.message ||
                 error.message ||
-                "Something went wrong",
-                {
-                    style: { background: "#333", color: "#fff" }
-                }
+                "Authentication failed",
+                { style: { background: "#333", color: "#fff" } }
             );
         } finally {
             setLoading(false);
