@@ -5,19 +5,15 @@ const sendEmail = async (to, subject, text) => {
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 587,
-            secure: false, // Must be false for port 587
+            secure: false, // Must be false for 587
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS, // 16-character App Password (no spaces)
+                pass: process.env.EMAIL_PASS, // juqliicphifjkkte (Verified from your screenshot!)
             },
             tls: {
-                // Critical for cloud hosting like Render to bypass handshake blocks
                 rejectUnauthorized: false,
                 minVersion: "TLSv1.2"
-            },
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
+            }
         });
 
         const mailOptions = {
@@ -27,12 +23,9 @@ const sendEmail = async (to, subject, text) => {
             text,
         };
 
-        // We return the promise so the controller can choose to 'await' it or not
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent successfully to ${to}`);
-        return info;
+        // We use await here so the background process knows when it's done
+        return await transporter.sendMail(mailOptions);
     } catch (err) {
-        // We log the error but don't let it crash the main process
         console.error(`❌ NODEMAILER ERROR: ${err.message}`);
         return null;
     }
