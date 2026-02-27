@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL, // change if deployed
+    baseURL: "https://yogabackend-ehoa.onrender.com/api/auth", // change if deployed
 });
 
 // Signup
