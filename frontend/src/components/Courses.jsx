@@ -287,7 +287,12 @@ export default function CoursesPage() {
         setTimeout(() => { setFormLoad(false); setEnrollStep(2); }, 1800);
     };
 
-    const filtered = filter === "All" ? COURSES : COURSES.filter(c => c.level.includes(filter));
+    const filtered =
+        filter === "All"
+            ? COURSES
+            : filter === "Free Trials"
+                ? COURSES.filter(c => c.tag === "Free Trial")
+                : COURSES.filter(c => c.level.includes(filter));
 
     const inpStyle = (field) => ({
         width: "100%",
