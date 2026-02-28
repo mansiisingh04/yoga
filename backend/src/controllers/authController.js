@@ -64,6 +64,7 @@ Team Yoga Bliss`
                 phone: user.phone,
             },
         });
+        sendEmail(user.email).catch(err => console.log(err));
 
     } catch (error) {
         console.error("Signup Error:", error);
