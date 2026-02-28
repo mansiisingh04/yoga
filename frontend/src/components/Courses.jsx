@@ -188,6 +188,40 @@ const COURSES = [
         spotsLeft: 5,
         description: "Experience yoga like never before — suspended in silk, upside down, and completely free. Aerial yoga combines traditional yoga with acrobatics and dance. Equipment guidance included.",
     },
+    {
+        id: 7,
+        title: "Aerial Yoga Explorer – 3 Day Free Trial",
+        subtitle: "Defy gravity. Experience freedom.",
+        level: "Beginner Friendly",
+        duration: "3 Days",
+        sessions: "3 Sessions",
+        price: "₹0",
+        originalPrice: "₹0",
+        rating: 4.8,
+        enrolled: 412,
+        instructor: "Kenji Nakamura",
+        instructorRole: "Aerial Expert · RYT-300",
+        instructorImg: "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=200&q=80",
+        img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=700&q=80",
+        color: "#C4614A",
+        colorLight: "#D4826E",
+        tag: "Free Trial",
+
+        includes: [
+            "3 Live Guided Sessions (60 min each)",
+            "Beginner-Friendly Introduction to Aerial Yoga",
+            "Basic Hammock Setup & Safety Guidance",
+            "Core Strength & Flexibility Starter Flow",
+            "Access to Session Replays (3 Days)",
+            "Completion Badge"
+        ],
+
+        curriculum: [
+            { Day: "Day 1", topic: "Introduction to Aerial Yoga & Safety Basics" },
+            { Day: "Day 2", topic: "Foundational Poses & Core Activation" },
+            { Day: "Day 3", topic: "Beginner Flow & Confidence Building Sequence" }
+        ]
+    }
 ];
 
 const FILTERS = ["All", "Beginner", "Intermediate", "Advanced", "Free Trials"];

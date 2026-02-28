@@ -903,10 +903,8 @@ export default function YogaInstructorPage() {
             </div>
 
             <div className="yp-hero-ctas">
-              <button className="yp-btn-primary" onClick={() => showToast("Booking request sent — Priya will confirm within 24 hrs")}>
-                Book a Class
-              </button>
-              <button className="yp-btn-secondary" onClick={() => setTab("SCHEDULE")}>
+
+              <button className="yp-btn-secondary" onClick={(navigate) => setTab("SCHEDULE")}>
                 View Schedule
               </button>
             </div>

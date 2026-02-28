@@ -308,7 +308,7 @@ const LandingPage = () => {
 
                     <div className="flex flex-row items-center justify-center gap-4">
                         <button
-                            onClick={handleFreeTrialClick}
+                            onClick={() => navigate('/courses')}
                             className="bg-[#E9EDC9] text-[#2D302D] px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-xl cursor-pointer"
                         >
                             Start Free Trial
@@ -465,7 +465,7 @@ const LandingPage = () => {
                     <div className="pt-8">
                         {/* THE BOTTOM FREE TRIAL BUTTON */}
                         <button
-                            onClick={handleFreeTrialClick}  // <-- attach here too
+                            onClick={() => navigate('/courses')}  // <-- attach here too
                             className="bg-[#FF8A50] text-white px-16 py-6 rounded-[2rem] text-xs font-bold uppercase tracking-[0.3em] shadow-2xl hover:-translate-y-1 transition-all cursor-pointer"
                         >
                             Start Free Trial for 3 Days

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 import { signupUser, loginUser } from "../api/auth";
 
 const YogaAuth = () => {
@@ -10,7 +10,7 @@ const YogaAuth = () => {
 
     const [mode, setMode] = useState("login");
     const [loading, setLoading] = useState(false);
-
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -159,15 +159,24 @@ const YogaAuth = () => {
                         </div>
                     )}
 
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        required
-                        className="w-full p-5 rounded-2xl bg-[#F8F8F8] outline-none text-gray-500 text-sm"
-                    />
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Password"
+                            required
+                            className="w-full p-5 pr-12 rounded-2xl bg-[#F8F8F8] outline-none text-gray-500 text-sm"
+                        />
+
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-black transition"
+                        >
+                            {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                        </span>
+                    </div>
 
                     <button
                         type="submit"
